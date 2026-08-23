@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Razorpay AI Revenue Recovery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h1>AI Revenue Recovery</h1>
+            </div>
+            <div class="status-badge">Demo Mode</div>
+        </header>
+
+        <main class="dashboard">
+            <section class="panel input-panel">
+                <div class="panel-header">
+                    <h2>Incoming Transaction</h2>
+                    <button id="btn-fetch" class="btn btn-secondary">Load Random Event</button>
+                </div>
+                
+                <div class="payload-editor" id="payload-container">
+                    <pre><code id="payload-code">{"status": "Waiting for data..."}</code></pre>
+                </div>
+
+                <button id="btn-diagnose" class="btn btn-primary" disabled>Diagnose Root Cause</button>
+            </section>
+
+            <section class="panel pipeline-panel">
+                <div class="panel-header">
+                    <h2>Diagnostic Pipeline</h2>
+                    <span id="audit-id-badge" class="audit-badge hidden">Audit ID: -</span>
+                </div>
+
+                <div class="pipeline-stages">
+                    <!-- Stage 1 -->
+                    <div class="stage" id="stage-ingestion">
+                        <div class="stage-icon">1</div>
+                        <div class="stage-content">
+                            <h3>Ingestion & Validation</h3>
+                            <p class="stage-result" id="res-ingestion">Waiting...</p>
+                        </div>
+                    </div>
+
+                    <!-- Stage 2 -->
+                    <div class="stage" id="stage-rules">
+                        <div class="stage-icon">2</div>
+                        <div class="stage-content">
+                            <h3>Rule Engine</h3>
+                            <p class="stage-result" id="res-rules">Waiting...</p>
+                        </div>
+                    </div>
+
+                    <!-- Stage 3 -->
+                    <div class="stage" id="stage-ml">
+                        <div class="stage-icon">3</div>
+                        <div class="stage-content">
+                            <h3>ML Classifier</h3>
+                            <p class="stage-result" id="res-ml">Waiting...</p>
+                        </div>
+                    </div>
+
+                    <!-- Stage 4 -->
+                    <div class="stage" id="stage-explanation">
+                        <div class="stage-icon">4</div>
+                        <div class="stage-content">
+                            <h3>Explanation Layer</h3>
+                            <p class="stage-result" id="res-explanation">Waiting...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="final-result hidden" id="final-result-card">
+                    <div class="result-header">
+                        <h3>Diagnosis Complete</h3>
+                        <span class="confidence" id="final-confidence">100% Confidence</span>
+                    </div>
+                    <div class="result-body">
+                        <div class="label-group">
+                            <span class="label">Root Cause:</span>
+                            <strong class="value highlight" id="final-root-cause">Unknown</strong>
+                        </div>
+                        <div class="label-group">
+                            <span class="label">Explanation:</span>
+                            <span class="value" id="final-explanation-text">...</span>
+                        </div>
+                        <div class="label-group">
+                            <span class="label">Next Step:</span>
+                            <span class="value" id="final-next-step">...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
