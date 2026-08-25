@@ -1,7 +1,7 @@
 from stages import IngestionStage, RuleEngineStage, explain_decision
 from ml_classifier import MLClassifierStage
 from audit_log import write_audit_log
-from recovery import RecoveryRecommendationStage
+from recovery_engine import RecoveryRecommendationStage
 
 class PipelineOrchestrator:
     def __init__(self, ml_classifier: MLClassifierStage):
@@ -63,9 +63,10 @@ class PipelineOrchestrator:
             used_fields=used_fields,
             explanation=explanation_result["explanation"],
             next_step=explanation_result["next_step"],
-            recovery_workflow=recovery_rec['recovery_workflow'],
-            recovery_status=recovery_rec['recovery_status'],
-            recovery_estimated_probability=recovery_rec['recovery_estimated_probability']
+            recommended_action=recovery_rec['recommended_action'],
+            requires_approval=recovery_rec['requires_approval'],
+            approval_status=recovery_rec['approval_status'],
+            estimated_recovery_likelihood=recovery_rec['estimated_recovery_likelihood']
         )
 
         # Build final response
@@ -79,8 +80,9 @@ class PipelineOrchestrator:
             "decision_layer": decision["decision_layer"],
             "explanation": explanation_result["explanation"],
             "next_step": explanation_result["next_step"],
-            "recovery_workflow": recovery_rec['recovery_workflow'],
-            "recovery_status": recovery_rec['recovery_status'],
-            "recovery_estimated_probability": recovery_rec['recovery_estimated_probability'],
+            "recommended_action": recovery_rec['recommended_action'],
+            "requires_approval": recovery_rec['requires_approval'],
+            "approval_status": recovery_rec['approval_status'],
+            "estimated_recovery_likelihood": recovery_rec['estimated_recovery_likelihood'],
             "audit_id": audit_id
         }

@@ -23,9 +23,10 @@ def init_db():
             used_fields_json TEXT NOT NULL,
             explanation TEXT NOT NULL,
             next_step TEXT NOT NULL,
-            recovery_workflow TEXT,
-            recovery_status TEXT,
-            recovery_estimated_probability REAL
+            recommended_action TEXT,
+            requires_approval INTEGER,
+            approval_status TEXT,
+            estimated_recovery_likelihood REAL
         )
     """)
     conn.commit()
@@ -39,9 +40,10 @@ def write_audit_log(
     used_fields: dict,
     explanation: str,
     next_step: str,
-    recovery_workflow: str,
-    recovery_status: str,
-    recovery_estimated_probability: float
+    recommended_action: str,
+    requires_approval: bool,
+    approval_status: str,
+    estimated_recovery_likelihood: float
 ):
     """
     Writes a classification decision to the append-only SQLite store.
@@ -61,12 +63,12 @@ def write_audit_log(
         INSERT INTO audit_log (
             timestamp, decision_layer, rule_id, root_cause, confidence, 
             used_fields_json, explanation, next_step,
-            recovery_workflow, recovery_status, recovery_estimated_probability
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            recommended_action, requires_approval, approval_status, estimated_recovery_likelihood
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         timestamp, decision_layer, rule_id, root_cause, confidence,
         used_fields_json, explanation, next_step,
-        recovery_workflow, recovery_status, recovery_estimated_probability
+        recommended_action, int(requires_approval), approval_status, estimated_recovery_likelihood
     ))
     conn.commit()
     inserted_id = cursor.lastrowid

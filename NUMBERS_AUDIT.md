@@ -39,9 +39,9 @@ The stacked horizontal bar chart displayed on the dashboard monitor represents t
 *   **`0.5% Pipeline Escalation Rate`**
     *   *Type:* Real
     *   *Source:* `main.py` execution summary. Exactly `5 / 1001` cases were escalated as `unknown` (confidence below `0.6` or missing crucial fields).
-*   **`85.0% ML Accuracy`**
+*   **`32.0% ML Accuracy`**
     *   *Type:* Real
-    *   *Source:* Test evaluation accuracy score printed by `main.py` for the Gradient Boosting model on the ambiguous subset (`Overall Accuracy: 0.85`).
-*   **`4.1% Ambiguous Escalation Rate`**
+    *   *Source:* Test evaluation accuracy score printed by `main.py` for the Gradient Boosting model on the ambiguous subset (`Overall Accuracy: 0.32`).
+*   **`27.6% Ambiguous Escalation Rate`**
     *   *Type:* Real
-    *   *Source:* The percentage of ambiguous events escalated because the ML model predicted with confidence below `0.6` (`Escalation Rate (punted to unknown): 4.1%`).
+    *   *Source:* The percentage of ambiguous events escalated because the ML model predicted with confidence below `0.6` (`Escalation Rate (punted to unknown): 27.6%`).

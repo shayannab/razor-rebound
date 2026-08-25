@@ -107,8 +107,8 @@ def run_demo():
     # --- RECOVERY SUMMARY ---
     print("\n--- RECOVERY RECOMMENDATION SUMMARY ---")
     total_volume = sum(r['amount'] for r in processed)
-    recommended_runs = [r for r in processed if r['recovery_status'] == 'recommended, pending approval']
-    expected_recovered = sum(r['amount'] * r['recovery_estimated_probability'] for r in recommended_runs)
+    recommended_runs = [r for r in processed if r.get('approval_status') == 'pending' and r.get('recommended_action') != 'no recommended action - escalate to manual review']
+    expected_recovered = sum(r['amount'] * r['estimated_recovery_likelihood'] for r in recommended_runs)
     recovery_rate = expected_recovered / total_volume * 100 if total_volume > 0 else 0.0
     
     print(f"Total Failure Volume Processed: ${total_volume:,} USD")

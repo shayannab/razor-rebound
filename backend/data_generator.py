@@ -65,11 +65,15 @@ def generate_dataset(n_samples: int, seed: int) -> pd.DataFrame:
             if rng.random() < 0.5:
                 true_label = 'bank_partner_restriction'
                 # Weak signals correlating
-                if rng.random() < 0.8:
+                if rng.random() < 0.5:
                     country = 'IN'
                     card_sub_type = 'prepaid'
             else:
                 true_label = 'bank_technical_error'
+                # Rebalance data to prevent other countries from perfectly predicting bank_technical_error
+                if rng.random() < 0.3:
+                    country = 'IN'
+                    card_sub_type = 'prepaid'
             
             error_code = 'technical_error' # Rule engine won't match this code/source combo
             error_source = rng.choice(['gateway', 'bank'])
