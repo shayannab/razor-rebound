@@ -1,50 +1,93 @@
-class RecoveryRecommendationStage:
-    """
-    RECOVERY-RECOMMENDATION LAYER (Stage 6)
-    Maps a diagnosed root cause to a specific bounded intervention workflow.
-    Assigns a status of 'pending' for human-in-the-loop compliance,
-    and returns a simulated recovery likelihood.
-    """
-    def __init__(self):
-        # A deterministic decision table for recovery recommendations based on the root cause.
-        self.recovery_map = {
-            '3ds_enrollment_issue': {
-                'recommended_action': 'Request non-3DS routing enablement, or surface Apple Pay/Google Pay as an alternative at checkout.',
-                'requires_approval': True,
-                'estimated_recovery_likelihood': 0.28  # Slicker/FlexPay reported 24-32% recovery on "hard" declines with the right approach
-            },
-            'bank_partner_restriction': {
-                'recommended_action': 'Route this transaction through an alternative acquiring partner that supports the region/MCC.',
-                'requires_approval': True,
-                'estimated_recovery_likelihood': 0.85
-            },
-            'bank_technical_error': {
-                'recommended_action': 'Schedule an intelligent retry loop after 4 hours to bypass the temporary issuer outage.',
-                'requires_approval': True,
-                'estimated_recovery_likelihood': 0.18  # Industry data mentioned retries recover roughly 15-20% of failures broadly
-            },
-            'risk_block': {
-                'recommended_action': 'no recommended action - escalate to manual review',
-                'requires_approval': True,
-                'estimated_recovery_likelihood': 0.0
-            },
-            'integration_bug': {
-                'recommended_action': 'no recommended action - escalate to manual review',
-                'requires_approval': True,
-                'estimated_recovery_likelihood': 0.0
-            },
-            'unknown': {
-                'recommended_action': 'no recommended action - escalate to manual review',
-                'requires_approval': True,
-                'estimated_recovery_likelihood': 0.0
-            }
-        }
+from rule_engine import classify
+from db import log_audit, has_prior_execution
+from razorpay_client import create_payment_link
 
-    def recommend(self, root_cause: str) -> dict:
-        settings = self.recovery_map.get(root_cause, self.recovery_map['unknown'])
-        return {
-            'recommended_action': settings['recommended_action'],
-            'requires_approval': settings['requires_approval'],
-            'approval_status': 'pending', # Auto-set to pending, no auto-execution allowed
-            'estimated_recovery_likelihood': settings['estimated_recovery_likelihood']
-        }
+class BoundedRecoveryEngine:
+    def __init__(self, max_amount_per_event=500000, total_budget=2000000):
+        self.max_amount_per_event = max_amount_per_event
+        self.budget_remaining = total_budget
+        self.consecutive_failures = 0
+        self.breaker_tripped = False
+        
+    def process_event(self, event: dict) -> dict:
+        event_id = event.get('payment_id') or event.get('order_id') # In this batch data, payment_id is our unique event identifier
+        amount = event.get('amount')
+        if amount is None:
+            amount = 0
+        
+        classification = classify(event)
+        
+        if not classification['reroutable']:
+            log_audit(event_id, "pending_approval", {
+                "reason": "Not reroutable",
+                "classification": classification
+            })
+            return {"status": "pending_approval", "reason": "not_reroutable"}
+            
+        if has_prior_execution(event_id):
+            return {"status": "skipped", "reason": "prior_execution"}
+            
+        if self.breaker_tripped:
+            log_audit(event_id, "pending_approval_breaker_tripped", {
+                "reason": "Circuit breaker tripped (3+ consecutive failures)",
+                "classification": classification
+            })
+            return {"status": "pending_approval_breaker_tripped"}
+            
+        # Check eligibility for auto-execution
+        if classification['confidence'] < 0.85:
+            log_audit(event_id, "pending_approval", {
+                "reason": f"Confidence {classification['confidence']} < 0.85",
+                "classification": classification
+            })
+            return {"status": "pending_approval", "reason": "confidence_too_low"}
+            
+        if amount > self.max_amount_per_event:
+            log_audit(event_id, "pending_approval", {
+                "reason": f"Amount {amount} exceeds cap {self.max_amount_per_event}",
+                "classification": classification
+            })
+            return {"status": "pending_approval", "reason": "amount_over_cap"}
+            
+        if amount > self.budget_remaining:
+            log_audit(event_id, "pending_approval", {
+                "reason": f"Amount {amount} exceeds remaining budget {self.budget_remaining}",
+                "classification": classification
+            })
+            return {"status": "pending_approval", "reason": "budget_exhausted"}
+            
+        # Eligible for execution
+        log_audit(event_id, "execution_attempted", {
+            "amount": amount,
+            "classification": classification
+        })
+        
+        try:
+            link = create_payment_link(
+                amount_paise=amount,
+                description=f"Recovery for {event_id}",
+                reference_id=event_id
+            )
+            
+            # Success!
+            self.budget_remaining -= amount
+            self.consecutive_failures = 0 # reset on success
+            
+            log_audit(event_id, "execution_result", {
+                "status": "success",
+                "payment_link_id": link.get("id"),
+                "short_url": link.get("short_url")
+            })
+            return {"status": "executed", "payment_link_id": link.get("id")}
+            
+        except Exception as e:
+            self.consecutive_failures += 1
+            log_audit(event_id, "execution_result", {
+                "status": "failure",
+                "error": str(e)
+            })
+            
+            if self.consecutive_failures >= 3:
+                self.breaker_tripped = True
+                
+            return {"status": "execution_failed", "error": str(e)}

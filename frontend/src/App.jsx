@@ -280,14 +280,14 @@ function App() {
               </p>
               <div className="stat-grid">
                 <div className="stat-item" style={{ borderTop: '3px solid var(--error)' }}>
-                  <div className="stat-num" style={{ color: 'var(--error)' }}>23%</div>
-                  <div className="stat-label">Checkout Errors</div>
-                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(illustrative)</div>
+                  <div className="stat-num" style={{ color: 'var(--error)' }}>1,000</div>
+                  <div className="stat-label">Total Test Failures</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(simulated batch)</div>
                 </div>
                 <div className="stat-item" style={{ borderTop: '3px solid var(--error)' }}>
-                  <div className="stat-num" style={{ color: 'var(--error)' }}>₹4.7L</div>
-                  <div className="stat-label">Monthly Leakage</div>
-                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(illustrative)</div>
+                  <div className="stat-num" style={{ color: 'var(--error)' }}>$263k</div>
+                  <div className="stat-label">Total Failure Value</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(simulated USD equivalent)</div>
                 </div>
                 <div className="stat-item" style={{ borderTop: '3px solid var(--error)' }}>
                   <div className="stat-num" style={{ color: 'var(--error)' }}>0</div>
@@ -429,9 +429,9 @@ function App() {
               </p>
               <div className="stat-grid">
                 <div className="stat-item" style={{ borderTop: '3px solid var(--success)', backgroundColor: 'rgba(255,255,255,0.7)' }}>
-                  <div className="stat-num" style={{ color: 'var(--success)' }}>35%</div>
-                  <div className="stat-label">Transactions Saved</div>
-                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(illustrative recovery)</div>
+                  <div className="stat-num" style={{ color: 'var(--success)' }}>26.7%</div>
+                  <div className="stat-label">Recoverable Percentage</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(SIMULATED, based on estimated likelihoods)</div>
                 </div>
                 <div className="stat-item" style={{ borderTop: '3px solid var(--success)', backgroundColor: 'rgba(255,255,255,0.7)' }}>
                   <div className="stat-num" style={{ color: 'var(--success)' }}>&lt; 50ms</div>

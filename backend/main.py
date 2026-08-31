@@ -135,9 +135,9 @@ def run_demo():
         print(f" Layer: {s['decision_layer']}")
         print(f" Explanation: {s['explanation']}")
         print(f" Next Step: {s['next_step']}")
-        print(f" Recovery Workflow: {s['recovery_workflow']} (Est. Prob: {s['recovery_estimated_probability']:.2f})")
-        print(f" Recovery Status: {s['recovery_status']}")
-        print(f" Audit Log ID: {s['audit_id']}")
+        print(f" Recovery Workflow: {s.get('recovery_workflow', 'N/A')} (Est. Prob: {s.get('recovery_estimated_probability', 0.0):.2f})")
+        print(f" Recovery Status: {s.get('recovery_status', 'N/A')}")
+        print(f" Audit Log ID: {s.get('audit_id', 'N/A')}")
         print("-" * 40)
 
 if __name__ == "__main__":

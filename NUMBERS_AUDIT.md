@@ -4,21 +4,21 @@ This document maps every metric and statistic shown on the Scrollytelling Landin
 
 ## Baseline Statistics (Scene 3 — The Pain & Revenue Loss)
 
-*   **`23% Checkout Errors`**
-    *   *Type:* Illustrative
-    *   *Source:* Baseline assumption. Represents the payment failure rate of Bob's platform prior to integrating diagnostics.
-*   **`₹4.7L Monthly Leakage`**
-    *   *Type:* Illustrative
-    *   *Source:* Baseline assumption. Calculated financial impact of unexplained gateway errors before recovery.
+*   **`1,000 Total Test Failures`**
+    *   *Type:* Real (Simulated Batch)
+    *   *Source:* Evaluated test batch size in `simulate_recovery.py`. Represents the number of synthetic payment failures passed through the pipeline.
+*   **`$263,911.85 Total Failure Value`**
+    *   *Type:* Real (Simulated Value)
+    *   *Source:* Calculated sum of transaction amounts for all 1000 failures evaluated in `simulate_recovery.py`.
 *   **`0 Actionable Clues`**
     *   *Type:* Illustrative
     *   *Source:* Represents the lack of structural metadata or actionable tips in generic raw weblogs (like `BAD_REQUEST_ERROR`).
 
 ## Diagnostics Performance (Scene 8 — The Result)
 
-*   **`35% Transactions Saved`**
-    *   *Type:* Illustrative
-    *   *Source:* Target recovery rate. The recommendation-engine simulation estimates that 35% of failure causes (like card type mismatches or incorrect billing inputs) can be immediately resolved through automated client prompts or acquirer routing rules.
+*   **`26.7% Recoverable Percentage`**
+    *   *Type:* Real (SIMULATED, based on estimated likelihoods)
+    *   *Source:* Output of `simulate_recovery.py`. The recommendation-engine simulator estimates that $70,488.24 of the $263,911.85 total failure value could be recovered, based on estimated success rates applied to the specific recommended actions (73.2% of failures received an actionable recommendation).
 *   **`< 50ms Evaluation Speed`**
     *   *Type:* Real (Conservative SLA)
     *   *Source:* Derived from `main.py` execution metrics. Processing a batch of 1,000 transactions sequentially takes under `1.0s` (averaging `< 1ms` per transaction evaluation). The `50ms` represents a highly conservative runtime API SLA.
