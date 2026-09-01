@@ -9,6 +9,8 @@ def _get_auth():
     key_secret = os.environ.get('RAZORPAY_KEY_SECRET')
     if not key_id or not key_secret:
         raise ValueError("RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET environment variables must be set.")
+    if not key_id.startswith('rzp_test_'):
+        raise ValueError("Only test keys (rzp_test_*) are permitted to prevent real money movement.")
     return HTTPBasicAuth(key_id, key_secret)
 
 def create_payment_link(amount_paise: int, description: str, reference_id: str) -> dict:
