@@ -78,7 +78,7 @@ class BoundedRecoveryEngine:
                 "payment_link_id": link.get("id"),
                 "short_url": link.get("short_url")
             })
-            return {"status": "executed", "payment_link_id": link.get("id")}
+            return {"status": "executed", "payment_link_id": link.get("id"), "short_url": link.get("short_url")}
             
         except Exception as e:
             self.consecutive_failures += 1
