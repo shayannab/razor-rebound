@@ -1,12 +1,15 @@
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import Optional
+import json
 import os
-import sys
 import random
+import sys
+from typing import Optional
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
+import pandas as pd
 
 try:
     from dotenv import load_dotenv
@@ -17,12 +20,15 @@ except ImportError:
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from stages import RuleEngineStage
+from audit_log import init_db
+from data_generator import get_train_test_data
+from db import get_all_logs, init_db as init_real_db, log_audit as db_log_audit
 from ml_classifier import MLClassifierStage
 from pipeline import PipelineOrchestrator
-from data_generator import get_train_test_data
-from audit_log import init_db
-import pandas as pd
+from razorpay_client import create_order, fetch_payment_link_status, get_key_id
+from recovery_engine import BoundedRecoveryEngine
+from rule_engine import classify
+from stages import RuleEngineStage
 
 app = FastAPI()
 
@@ -33,11 +39,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-from razorpay_client import create_order, get_key_id, fetch_payment_link_status
-from recovery_engine import BoundedRecoveryEngine
-from rule_engine import classify
-from db import init_db as init_real_db
 
 # Global pipeline & recovery engine instances
 pipeline_orchestrator = None
@@ -88,7 +89,6 @@ def random_test_event():
     if not test_data:
         return {}
     event = random.choice(test_data).copy()
-    # Don't leak true label to frontend
     event.pop('true_label', None)
     return event
 
@@ -159,16 +159,13 @@ def dashboard_data():
     Reads all rows from audit_log_real.db and assembles per-event summaries.
     Called on every dashboard.html page load — always returns current live state.
     """
-    from db import get_all_logs, log_audit as db_log_audit
     rows = get_all_logs()
 
-    # Build per-event view by collapsing rows
     events_map = {}
     for row in rows:
-        import json as _json
         eid = row["event_id"]
         action = row["action"]
-        details = _json.loads(row["details_json"])
+        details = json.loads(row["details_json"])
 
         if eid not in events_map:
             events_map[eid] = {
@@ -228,7 +225,7 @@ def dashboard_data():
                         "status": "paid"
                     })
                     ev["confirmed_amount_paise"] = paid_amt
-            except Exception as e:
+            except Exception:
                 pass
 
     return {"events": list(events_map.values())}
@@ -245,7 +242,6 @@ def confirm_payment(req: ConfirmPaymentRequest):
     Called by live_demo.html polling when a payment link status flips to 'paid'.
     Writes a payment_confirmed row to audit_log_real.db.
     """
-    from db import log_audit as db_log_audit
     db_log_audit(req.event_id, "payment_confirmed", {
         "payment_id": req.payment_id,
         "payment_link_id": req.payment_link_id,
@@ -263,7 +259,7 @@ app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 @app.get("/")
 def index():
-    return FileResponse(os.path.join(static_dir, "index.html"))
+    return RedirectResponse(url="/dashboard")
 
 @app.get("/dashboard")
 def dashboard():
