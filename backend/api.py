@@ -214,6 +214,23 @@ def dashboard_data():
         elif action == "payment_confirmed":
             ev["confirmed_amount_paise"] = details.get("amount_paid", 0)
 
+    # Auto-sync status from Razorpay API for any executed link not yet marked confirmed in DB
+    for eid, ev in events_map.items():
+        if ev.get("action") == "executed" and ev.get("payment_link_id") and (ev.get("confirmed_amount_paise") or 0) == 0:
+            try:
+                link_status = fetch_payment_link_status(ev["payment_link_id"])
+                if link_status == "paid":
+                    paid_amt = ev.get("amount_paise", 0)
+                    db_log_audit(eid, "payment_confirmed", {
+                        "payment_id": eid,
+                        "payment_link_id": ev["payment_link_id"],
+                        "amount_paid": paid_amt,
+                        "status": "paid"
+                    })
+                    ev["confirmed_amount_paise"] = paid_amt
+            except Exception as e:
+                pass
+
     return {"events": list(events_map.values())}
 
 class ConfirmPaymentRequest(BaseModel):
