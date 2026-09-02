@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
 
 # Node dependencies
 node_modules/
@@ -10,10 +11,25 @@ dist/
 dist-ssr/
 *.local
 
-# SQLite Database
+# SQLite Databases (keep locally, don't commit)
 *.db
-backend/audit_log.db
 
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Dev / scratch files (kept locally, not in commits)
+backend/main.py
+backend/report.py
+backend/run_real_batch.py
+backend/simulate_recovery.py
+backend/testScript.py
+backend/test_integration_live.py
+backend/test_recovery.py
+backend/extracted_data.json
+backend/static/index.html
+backend/static/script.js
+backend/static/style.css
+BUILD_LOG.md
+NUMBERS_AUDIT.md
+conversation_transcript.jsonl
