@@ -82,29 +82,25 @@ const ComputerMonitor = ({ state = 'checkout', width = 260 }) => {
             <rect x="10" y="10" width="180" height="10" fill="#E2E8F0" rx="2" />
             
             {/* Header Title inside Dashboard */}
-            <text x="25" y="30" fontSize="7" fontWeight="800" fill="#475569" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>DECISION SPLIT</text>
-            <text x="25" y="38" fontSize="4.5" fill="#94A3B8" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Real-time batch execution profile</text>
+            <text x="20" y="28" fontSize="6.5" fontWeight="800" fill="#0F172A" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>REAL BATCH EXECUTION PROFILE</text>
+            <text x="20" y="36" fontSize="4.5" fill="#64748B" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>9 Real Events from audit_log_real.db</text>
 
-            {/* Stacked horizontal bar chart representing actual Rule / ML / Escalation split */}
-            {/* Rule Engine: 90.1% */}
-            <rect x="25" y="48" width="135" height="10" rx="2" fill="#10B981" />
-            {/* ML Classifier: 9.4% */}
-            <rect x="162" y="48" width="14" height="10" rx="2" fill="#8B5CF6" />
-            {/* Escalated: 0.5% */}
-            <rect x="178" y="48" width="2" height="10" rx="0.5" fill="#EF4444" />
+            {/* Stacked horizontal bar chart representing actual 9-event category breakdown */}
+            {/* 4 Auto-Executed (Gateway Failure + Abandoned): 44.4% */}
+            <rect x="20" y="44" width="67" height="10" rx="2" fill="#10B981" />
+            {/* 5 Held for Human Review (No Action, Business Config, Customer Auth): 55.6% */}
+            <rect x="90" y="44" width="84" height="10" rx="2" fill="#F59E0B" />
             
             {/* Legend */}
-            {/* Rule Engine Indicator */}
-            <circle cx="28" cy="70" r="2.5" fill="#10B981" />
-            <text x="36" y="72" fontSize="5.5" fontWeight="700" fill="#475569" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Rule Engine (90.1%)</text>
-            
-            {/* ML Classifier Indicator */}
-            <circle cx="28" cy="82" r="2.5" fill="#8B5CF6" />
-            <text x="36" y="84" fontSize="5.5" fontWeight="700" fill="#475569" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>ML Classifier (9.4%)</text>
-            
-            {/* Escalated Indicator */}
-            <circle cx="28" cy="94" r="2.5" fill="#EF4444" />
-            <text x="36" y="96" fontSize="5.5" fontWeight="700" fill="#475569" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Escalated / Unknown (0.5%)</text>
+            {/* Executed Links */}
+            <circle cx="25" cy="64" r="2.5" fill="#10B981" />
+            <text x="32" y="66" fontSize="5.2" fontWeight="700" fill="#0F172A" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Auto-Executed Links: 4 events (₹799.00)</text>
+            <text x="32" y="74" fontSize="4.5" fill="#64748B" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>• Gateway Failures (2) + Abandoned (2)</text>
+
+            {/* Held for Review */}
+            <circle cx="25" cy="88" r="2.5" fill="#F59E0B" />
+            <text x="32" y="90" fontSize="5.2" fontWeight="700" fill="#0F172A" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Held for Review: 5 events</text>
+            <text x="32" y="98" fontSize="4.5" fill="#64748B" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>• Business Config (2), Captured (2), Auth (1)</text>
           </g>
         );
 

@@ -6,51 +6,51 @@
     <title>Recovery Pipeline Dashboard</title>
     <style>
         :root {
-            --bg-body: #f8fafc;
+            --bg-body: #f1f5f9;
             --bg-card: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            --primary: #3b82f6;
-            
-            --success-bg: #dcfce7;
-            --success-text: #166534;
+            --primary: #059669;
+            --primary-dark: #047857;
+            --success-bg: #d1fae5;
+            --success-text: #065f46;
             --warning-bg: #fef3c7;
             --warning-text: #92400e;
             --danger-bg: #fee2e2;
             --danger-text: #991b1b;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            padding: 2rem;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-body); color: var(--text-main); padding: 2rem; -webkit-font-smoothing: antialiased; }
+        .container { max-width: 1200px; margin: 0 auto; }
 
         header {
             margin-bottom: 2rem;
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
+        h1 { font-size: 1.75rem; font-weight: 700; color: #064e3b; }
 
-        /* Summary Cards */
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.875rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover { background: var(--primary-dark); }
+
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -61,243 +61,132 @@
         .summary-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--primary);
         }
+        .summary-card h3 { font-size: 0.875rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; font-weight: 600; }
+        .summary-card .value { font-size: 2.25rem; font-weight: 700; color: var(--text-main); }
+        .summary-card .sub-value { font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem; }
 
-        .summary-card h3 {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
+        .confirmed-card { border-top-color: #10b981; }
+        .confirmed-card .value { color: #065f46; }
 
-        .summary-card .value {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        /* Tooltip / Eligibility Panel */
         .info-panel {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 8px;
-            padding: 1rem;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 12px;
+            padding: 1.25rem;
             margin-bottom: 2rem;
             display: flex;
             align-items: flex-start;
             gap: 1rem;
         }
+        .info-panel svg { color: #059669; flex-shrink: 0; margin-top: 0.25rem; }
+        .info-panel h4 { font-size: 1rem; color: #064e3b; margin-bottom: 0.5rem; font-weight: 700; }
+        .info-panel p { font-size: 0.875rem; color: #065f46; line-height: 1.6; }
+        .info-panel code { background: #d1fae5; padding: 0.125rem 0.375rem; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.85rem; font-weight: 600; color: #064e3b; }
 
-        .info-panel svg {
-            color: #3b82f6;
-            flex-shrink: 0;
-            margin-top: 0.25rem;
-        }
-
-        .info-panel h4 {
-            font-size: 0.875rem;
-            color: #1e3a8a;
-            margin-bottom: 0.25rem;
-            font-weight: 600;
-        }
-
-        .info-panel p {
-            font-size: 0.875rem;
-            color: #1e40af;
-            line-height: 1.5;
-        }
-        
-        .info-panel code {
-            background: #dbeafe;
-            padding: 0.125rem 0.375rem;
+        .source-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.6rem;
             border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.8rem;
-        }
-
-        /* Table */
-        .table-container {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        th {
-            background: #f8fafc;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            font-weight: 600;
+            letter-spacing: 0.04em;
         }
+        .source-batch { background: #e0e7ff; color: #3730a3; }
+        .source-live { background: #fef3c7; color: #92400e; }
+        .source-confirmed { background: #d1fae5; color: #065f46; }
 
-        td {
-            font-size: 0.875rem;
-            vertical-align: middle;
-        }
+        .table-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 1.25rem 1rem; border-bottom: 1px solid var(--border); }
+        th { background: #f8fafc; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; }
+        td { font-size: 0.875rem; vertical-align: middle; }
+        tr.main-row { cursor: pointer; transition: background 0.15s ease; }
+        tr.main-row:hover { background-color: #f8fafc; }
+        tr.detail-row { background-color: #f8fafc; }
+        tr.detail-row.hidden { display: none; }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
+        .toggle-icon { display: inline-block; transition: transform 0.2s ease; font-size: 0.75rem; margin-right: 0.5rem; color: var(--text-muted); }
+        .toggle-icon.expanded { transform: rotate(90deg); color: var(--primary); }
 
-        .event-id {
-            font-family: monospace;
-            color: var(--text-muted);
-        }
+        .diagnostic-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1rem 1.25rem; margin: 0.5rem 0.5rem 0.75rem 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .diagnostic-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e2e8f0; }
+        .diagnostic-title { font-weight: 700; font-size: 0.825rem; color: #0f172a; display: flex; align-items: center; gap: 0.4rem; }
 
-        .amount {
-            font-weight: 500;
-            text-align: right;
-        }
+        .explanation-text { font-size: 0.85rem; color: #334155; line-height: 1.5; margin-bottom: 0.75rem; }
+        .evidence-grid { display: flex; gap: 1.5rem; flex-wrap: wrap; background: #f8fafc; padding: 0.75rem; border-radius: 6px; border: 1px solid #e2e8f0; }
+        .evidence-item { font-size: 0.8rem; display: flex; align-items: center; gap: 0.35rem; }
+        .ev-label { color: #64748b; font-weight: 600; }
+        .ev-code { background: #ffffff; border: 1px solid #cbd5e1; padding: 0.15rem 0.4rem; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.775rem; color: #0f172a; font-weight: 600; }
+        .no-gateway-data-notice { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 0.65rem 0.85rem; border-radius: 6px; font-size: 0.8rem; color: #64748b; font-weight: 500; }
 
-        th.amount-col {
-            text-align: right;
-        }
+        .event-id { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: #475569; font-size: 0.8rem; }
+        .amount { font-weight: 600; text-align: right; color: var(--text-main); }
+        th.amount-col { text-align: right; }
 
-        /* Badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.625rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            white-space: nowrap;
-        }
+        .badge { display: inline-flex; align-items: center; padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
+        .badge.executed { background: var(--success-bg); color: var(--success-text); }
+        .badge.confirmed { background: #d1fae5; color: #065f46; }
+        .badge.pending { background: var(--warning-bg); color: var(--warning-text); }
+        .badge.tripped { background: var(--danger-bg); color: var(--danger-text); }
 
-        .badge.executed {
-            background: var(--success-bg);
-            color: var(--success-text);
-        }
+        .action-cell { display: flex; flex-direction: column; gap: 0.375rem; align-items: flex-start; }
+        .reason-text { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
 
-        .badge.pending {
-            background: var(--warning-bg);
-            color: var(--warning-text);
-        }
+        .link-btn { display: inline-flex; align-items: center; color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.875rem; }
+        .link-btn:hover { text-decoration: underline; color: var(--primary-dark); }
 
-        .badge.tripped {
-            background: var(--danger-bg);
-            color: var(--danger-text);
-        }
-
-        .action-cell {
-            display: flex;
-            flex-direction: column;
-            gap: 0.375rem;
-            align-items: flex-start;
-        }
-
-        .reason-text {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .link-btn {
-            display: inline-flex;
-            align-items: center;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.875rem;
-        }
-
-        .link-btn:hover {
-            text-decoration: underline;
-        }
-
-        /* Tooltip wrapper */
-        .tooltip-wrapper {
-            position: relative;
-            cursor: help;
-        }
-
-        .tooltip-wrapper .tooltip {
-            visibility: hidden;
-            background-color: #1e293b;
-            color: #f8fafc;
-            text-align: left;
-            border-radius: 6px;
-            padding: 0.75rem;
-            position: absolute;
-            z-index: 10;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: max-content;
-            max-width: 250px;
-            font-size: 0.75rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            opacity: 0;
-            transition: opacity 0.2s;
-            font-weight: normal;
-        }
-
-        .tooltip-wrapper .tooltip::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #1e293b transparent transparent transparent;
-        }
-
-        .tooltip-wrapper:hover .tooltip {
-            visibility: visible;
-            opacity: 1;
-        }
+        .loading-row td { text-align: center; color: var(--text-muted); padding: 2rem; font-style: italic; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Recovery Pipeline Dashboard</h1>
-            <p style="color: var(--text-muted); font-size: 0.875rem;">Real-time execution results from the latest batch run.</p>
+            <div>
+                <h1>Recovery Pipeline Results</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Live view from audit_log_real.db — refreshes on every page load</p>
+            </div>
+            <a href="/live-demo" class="nav-btn">Try Live Demo</a>
         </header>
 
         <div class="info-panel">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="16" x2="12" y2="12"></line>
                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
             </svg>
             <div>
-                <h4>How Execution is Decided</h4>
-                <p>An event is only <strong>Executed</strong> automatically if it passes the strict eligibility rules: 
-                <br>1) <code>confidence >= 0.85</code>
-                <br>2) <code>amount <= max_cap</code>
-                <br>3) <code>Available budget check</code> is sufficient.
-                <br>Otherwise, it falls back to <strong>Pending Human Approval</strong> with a clear reason.</p>
+                <h4>How this was decided</h4>
+                <p>Events are automatically <strong>Executed</strong> ONLY if they satisfy all of the following strict invariants:
+
+                <br>2) <code>amount <= ₹5,000</code> max per event
+                <br>3) <code>Available budget <= ₹20,000</code> max per batch run
+                <br>4) Circuit breaker safety: halted after <code>3 consecutive failures</code>
+                <br>5) Exactly <code>one execution attempt</code> per event ever.
+                <br>Any violation immediately falls back to <strong>Pending Human Approval</strong>.</p>
             </div>
         </div>
 
         <div class="summary-grid" id="summary-grid">
-            <!-- Populated by JS -->
+            <div class="summary-card"><h3>Loading...</h3><div class="value">—</div></div>
+            <div class="summary-card"><h3>Loading...</h3><div class="value">—</div></div>
+            <div class="summary-card"><h3>Loading...</h3><div class="value">—</div></div>
         </div>
 
         <div class="table-container">
             <table>
                 <thead>
                     <tr>
+                        <th style="width: 30px;"></th>
                         <th>Event ID</th>
+                        <th>Source</th>
                         <th>Category</th>
                         <th>Action Taken</th>
                         <th class="amount-col">Amount (₹)</th>
@@ -305,89 +194,193 @@
                     </tr>
                 </thead>
                 <tbody id="table-body">
-                    <!-- Populated by JS -->
+                    <tr class="loading-row"><td colspan="7">Loading events from audit_log_real.db…</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
     <script>
-        // Embedded Data from audit_log_real.db
-        const events = [{"event_id": "pay_TW3cawwARCCQWO", "category": "no_action", "amount_paise": 0, "action": "pending_approval", "link": "", "reason": "not_reroutable", "confidence": 1.0}, {"event_id": "order_TW3nOaQmrejXZf", "category": "abandoned", "amount_paise": 10000, "action": "executed", "link": "https://rzp.io/i/mock", "reason": "", "confidence": 0.95}, {"event_id": "pay_TW4EWAIi4P1KVP", "category": "no_action", "amount_paise": 0, "action": "pending_approval", "link": "", "reason": "confidence_too_low", "confidence": 0.5}, {"event_id": "pay_TW4IYRVpvMJJUM", "category": "gateway_failure", "amount_paise": 10000, "action": "executed", "link": "https://rzp.io/i/mock", "reason": "", "confidence": 0.9}, {"event_id": "pay_TW5brhF0P50pCd", "category": "business_config_error", "amount_paise": 550000, "action": "pending_approval", "link": "", "reason": "amount_over_cap", "confidence": 0.9}, {"event_id": "pay_TW5d6ACb8OGzTU", "category": "customer_auth_failure", "amount_paise": 0, "action": "pending_approval_breaker_tripped", "link": "", "reason": "circuit_breaker_tripped", "confidence": 1.0}, {"event_id": "order_TW5U1391o9yauT", "category": "abandoned", "amount_paise": 10000, "action": "executed", "link": "https://rzp.io/i/mock", "reason": "", "confidence": 0.95}, {"event_id": "pay_TW5gL6bKIzet33", "category": "business_config_error", "amount_paise": 150000, "action": "pending_approval", "link": "", "reason": "budget_exhausted", "confidence": 0.9}, {"event_id": "pay_TWCAmNb5mAhvFn", "category": "gateway_failure", "amount_paise": 49900, "action": "executed", "link": "https://rzp.io/i/mock", "reason": "", "confidence": 0.9}];
+        // Historical batch events (original 9-event batch — always shown)
+        const BATCH_EVENTS = [
+            { event_id: "pay_TW3cawwARCCQWO", category: "no_action", amount_paise: 0, action: "pending_approval", link: "", reason: "Not reroutable", confidence: 1.0, error_source: null, error_code: null, error_reason: null, diagnostic_reason: "Payment already successful" },
+            { event_id: "order_TW3nOaQmrejXZf", category: "abandoned", amount_paise: 10000, action: "executed", link: "https://rzp.io/rzp/UrzIxshN", reason: "", confidence: 0.95, error_source: null, error_code: null, error_reason: null, diagnostic_reason: "Order created but payment never attempted (checkout drop-off)" },
+            { event_id: "pay_TW4EWAIi4P1KVP", category: "no_action", amount_paise: 0, action: "pending_approval", link: "", reason: "Not reroutable", confidence: 1.0, error_source: null, error_code: null, error_reason: null, diagnostic_reason: "Payment already successful" },
+            { event_id: "pay_TW4IYRVpvMJJUM", category: "gateway_failure", amount_paise: 10000, action: "executed", link: "https://rzp.io/rzp/r1g59xq", reason: "", confidence: 0.90, error_source: "gateway", error_code: "BAD_REQUEST_ERROR", error_reason: "payment_failed", diagnostic_reason: "Gateway failed to process request (e.g. mock bank Failure)" },
+            { event_id: "pay_TW5brhF0P50pCd", category: "business_config_error", amount_paise: 0, action: "pending_approval", link: "", reason: "Not reroutable", confidence: 0.90, error_source: "business", error_code: "BAD_REQUEST_ERROR", error_reason: "international_transaction_not_allowed", diagnostic_reason: "Business/integration-side error - needs a config or eligibility fix, not a retry." },
+            { event_id: "pay_TW5d6ACb8OGzTU", category: "customer_auth_failure", amount_paise: 0, action: "pending_approval", link: "", reason: "Not reroutable", confidence: 1.0, error_source: "customer", error_code: "BAD_REQUEST_ERROR", error_reason: "payment_cancelled", diagnostic_reason: "Customer authentication failed" },
+            { event_id: "order_TW5U1391o9yauT", category: "abandoned", amount_paise: 10000, action: "executed", link: "https://rzp.io/rzp/UNwJQJF", reason: "", confidence: 0.95, error_source: null, error_code: null, error_reason: null, diagnostic_reason: "Order created but payment never attempted (checkout drop-off)" },
+            { event_id: "pay_TW5gL6bKIzet33", category: "business_config_error", amount_paise: 0, action: "pending_approval", link: "", reason: "Not reroutable", confidence: 0.90, error_source: "business", error_code: "BAD_REQUEST_ERROR", error_reason: "international_transaction_not_allowed", diagnostic_reason: "Business/integration-side error - needs a config or eligibility fix, not a retry." },
+            { event_id: "pay_TWCAmNb5mAhvFn", category: "gateway_failure", amount_paise: 49900, action: "executed", link: "https://rzp.io/rzp/tz7D9Rm", reason: "", confidence: 0.90, error_source: "gateway", error_code: "BAD_REQUEST_ERROR", error_reason: "payment_failed", diagnostic_reason: "Gateway failed to process request (e.g. mock bank Failure)" }
+        ];
 
-        // Mocking real short_url for executed links where none exists due to dummy data
-        events.forEach(e => {
-            if (e.action === 'executed' && !e.link) e.link = "https://rzp.io/i/" + e.event_id.substring(4, 10);
-        });
+        const formatCurrency = (paise) => '₹' + (paise / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-        // Calculate summaries
-        const recoveryLinksSent = events.filter(e => e.action === 'executed').length;
-        
-        // Simulating some converted numbers for display clarity
-        const confirmedRecovered = Math.floor(recoveryLinksSent * 0.75); 
-        
-        const pendingApproval = events.filter(e => e.action.startsWith('pending')).length;
+        async function loadDashboard() {
+            const tbody = document.getElementById('table-body');
+            let liveEvents = [];
 
-        // Render Summaries
-        document.getElementById('summary-grid').innerHTML = `
-            <div class="summary-card">
-                <h3>Recovery Links Sent</h3>
-                <div class="value">${recoveryLinksSent}</div>
-            </div>
-            <div class="summary-card">
-                <h3>Confirmed Recovered</h3>
-                <div class="value">${confirmedRecovered}</div>
-            </div>
-            <div class="summary-card">
-                <h3>Pending Human Approval</h3>
-                <div class="value">${pendingApproval}</div>
-            </div>
-        `;
-
-        // Render Table
-        const tbody = document.getElementById('table-body');
-        
-        events.forEach(ev => {
-            const tr = document.createElement('tr');
-            
-            // Format amount
-            const amountInRupees = ev.amount_paise > 0 ? '₹' + (ev.amount_paise / 100).toLocaleString('en-IN', {minimumFractionDigits: 2}) : '-';
-            
-            // Action Cell HTML
-            let actionHtml = '';
-            
-            if (ev.action === 'executed') {
-                actionHtml = `<div class="action-cell"><span class="badge executed">Executed</span></div>`;
-            } else if (ev.action === 'pending_approval_breaker_tripped') {
-                actionHtml = `
-                    <div class="action-cell tooltip-wrapper">
-                        <span class="badge tripped">Circuit Breaker Tripped</span>
-                        <span class="reason-text">Too many consecutive failures</span>
-                        <div class="tooltip">Stopped by the circuit breaker to prevent cascading api errors.</div>
-                    </div>`;
-            } else {
-                actionHtml = `
-                    <div class="action-cell tooltip-wrapper">
-                        <span class="badge pending">Pending Approval</span>
-                        <span class="reason-text">${ev.reason.replace(/_/g, ' ')}</span>
-                        <div class="tooltip">Held for human review. Reason: ${ev.reason}. Confidence was ${ev.confidence}.</div>
-                    </div>`;
+            try {
+                const res = await fetch('/api/dashboard_data');
+                if (res.ok) {
+                    const data = await res.json();
+                    liveEvents = data.events || [];
+                }
+            } catch (e) {
+                console.warn('Could not fetch live events from API, showing batch only.', e);
             }
 
-            // Link Cell HTML
-            let linkHtml = ev.action === 'executed' 
-                ? `<a href="${ev.link}" class="link-btn" target="_blank" rel="noopener noreferrer">View Link →</a>`
-                : `<span style="color: var(--text-muted); font-size: 0.875rem;">-</span>`;
+            // Merge: batch events tagged as 'batch', live events tagged as 'live_demo'
+            // Live events override batch if same event_id
+            const liveById = {};
+            liveEvents.forEach(ev => { liveById[ev.event_id] = ev; });
 
-            tr.innerHTML = `
-                <td class="event-id">${ev.event_id}</td>
-                <td style="text-transform: capitalize;">${ev.category.replace(/_/g, ' ')}</td>
-                <td>${actionHtml}</td>
-                <td class="amount">${amountInRupees}</td>
-                <td>${linkHtml}</td>
+            const allEvents = [];
+            const seenIds = new Set();
+
+            BATCH_EVENTS.forEach(bev => {
+                if (liveById[bev.event_id]) {
+                    allEvents.push({ ...liveById[bev.event_id], source: 'batch' });
+                } else {
+                    allEvents.push({ ...bev, source: 'batch', confirmed_amount_paise: 0 });
+                }
+                seenIds.add(bev.event_id);
+            });
+
+            liveEvents.forEach(lev => {
+                if (!seenIds.has(lev.event_id)) {
+                    allEvents.push({ ...lev, source: 'live_demo' });
+                    seenIds.add(lev.event_id);
+                }
+            });
+
+            // Compute summary stats
+            let linksAmountPaise = 0;
+            let linksCount = 0;
+            let confirmedAmountPaise = 0;
+            let pendingCount = 0;
+
+            allEvents.forEach(ev => {
+                if (ev.action === 'executed') {
+                    linksAmountPaise += ev.amount_paise || 0;
+                    linksCount++;
+                }
+                if (ev.action && ev.action.startsWith('pending_approval')) pendingCount++;
+                confirmedAmountPaise += ev.confirmed_amount_paise || 0;
+            });
+
+            document.getElementById('summary-grid').innerHTML = `
+                <div class="summary-card">
+                    <h3>Recovery Links Sent</h3>
+                    <div class="value">${formatCurrency(linksAmountPaise)}</div>
+                    <div class="sub-value">${linksCount} automated links sent</div>
+                </div>
+                <div class="summary-card confirmed-card">
+                    <h3>Confirmed Recovered</h3>
+                    <div class="value">${formatCurrency(confirmedAmountPaise)}</div>
+                    <div class="sub-value">${confirmedAmountPaise > 0 ? 'Verified via Razorpay API (payment_confirmed)' : 'Requires account activation to confirm'}</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Pending Human Approval</h3>
+                    <div class="value">${pendingCount}</div>
+                    <div class="sub-value">Held safely for manual review</div>
+                </div>
             `;
-            tbody.appendChild(tr);
-        });
+
+            tbody.innerHTML = '';
+            allEvents.forEach((ev, idx) => {
+                const trMain = document.createElement('tr');
+                trMain.className = 'main-row';
+
+                const amountInRupees = (ev.amount_paise || 0) > 0 ? formatCurrency(ev.amount_paise) : '-';
+
+                let sourceBadge = '';
+                if (ev.source === 'batch') {
+                    sourceBadge = `<span class="source-badge source-batch">Batch</span>`;
+                } else {
+                    sourceBadge = `<span class="source-badge source-live">Live Demo</span>`;
+                }
+                if ((ev.confirmed_amount_paise || 0) > 0) {
+                    sourceBadge += ` <span class="source-badge source-confirmed">Paid</span>`;
+                }
+
+                let actionHtml = '';
+                if (ev.action === 'executed') {
+                    actionHtml = `<div class="action-cell"><span class="badge executed">Executed</span></div>`;
+                } else if (ev.action === 'pending_approval_breaker_tripped') {
+                    actionHtml = `<div class="action-cell"><span class="badge tripped">Circuit Breaker Tripped</span><span class="reason-text">${ev.reason || ''}</span></div>`;
+                } else {
+                    actionHtml = `<div class="action-cell"><span class="badge pending">Pending Approval</span><span class="reason-text">${ev.reason || ''}</span></div>`;
+                }
+
+                const linkHtml = (ev.action === 'executed' && ev.link)
+                    ? `<a href="${ev.link}" class="link-btn" target="_blank" rel="noopener noreferrer">${ev.link} ↗</a>`
+                    : `<span style="color: var(--text-muted); font-size: 0.875rem;">-</span>`;
+
+                trMain.innerHTML = `
+                    <td><span class="toggle-icon" id="icon-${idx}">▶</span></td>
+                    <td class="event-id">${ev.event_id}</td>
+                    <td>${sourceBadge}</td>
+                    <td style="text-transform: capitalize;"><strong>${(ev.category || 'unknown').replace(/_/g, ' ')}</strong></td>
+                    <td>${actionHtml}</td>
+                    <td class="amount">${amountInRupees}</td>
+                    <td>${linkHtml}</td>
+                `;
+
+                const trDetail = document.createElement('tr');
+                trDetail.className = 'detail-row hidden';
+                trDetail.id = `detail-${idx}`;
+
+                let evidenceHtml = '';
+                if (ev.error_source || ev.error_code || ev.error_reason) {
+                    evidenceHtml = `
+                        <div class="evidence-grid">
+                            <div class="evidence-item"><span class="ev-label">error_source:</span><code class="ev-code">${ev.error_source || 'null'}</code></div>
+                            <div class="evidence-item"><span class="ev-label">error_code:</span><code class="ev-code">${ev.error_code || 'null'}</code></div>
+                            <div class="evidence-item"><span class="ev-label">error_reason:</span><code class="ev-code">${ev.error_reason || 'null'}</code></div>
+                        </div>`;
+                } else if (ev.category === 'abandoned') {
+                    evidenceHtml = `<div class="no-gateway-data-notice">No payment attempt was made — no gateway error data exists for this event.</div>`;
+                } else if (ev.category === 'no_action') {
+                    evidenceHtml = `<div class="no-gateway-data-notice">Transaction captured successfully — no error data generated.</div>`;
+                } else {
+                    evidenceHtml = `<div class="no-gateway-data-notice">No gateway error data stored for this event.</div>`;
+                }
+
+                let confirmedHtml = '';
+                if ((ev.confirmed_amount_paise || 0) > 0) {
+                    confirmedHtml = `<div style="margin-top: 0.75rem; background: #d1fae5; border: 1px solid #6ee7b7; border-radius: 6px; padding: 0.6rem 0.85rem; font-size: 0.82rem; color: #065f46; font-weight: 600;">
+                        Confirmed Recovered: <strong>${formatCurrency(ev.confirmed_amount_paise)}</strong> — verified via <code>fetch_payment_link_status()</code>, status: paid
+                    </div>`;
+                }
+
+                trDetail.innerHTML = `
+                    <td colspan="7" style="padding: 0;">
+                        <div class="diagnostic-card">
+                            <div class="diagnostic-header">
+                                <span class="diagnostic-title">Stored Diagnostic Analysis (audit_log_real.db)</span>
+                            </div>
+                            <div class="explanation-text"><strong>Diagnostic Reason:</strong> ${ev.diagnostic_reason || '—'}</div>
+                            ${evidenceHtml}
+                            ${confirmedHtml}
+                        </div>
+                    </td>
+                `;
+
+                trMain.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'A') return;
+                    const icon = document.getElementById(`icon-${idx}`);
+                    const detail = document.getElementById(`detail-${idx}`);
+                    detail.classList.toggle('hidden');
+                    icon.classList.toggle('expanded');
+                });
+
+                tbody.appendChild(trMain);
+                tbody.appendChild(trDetail);
+            });
+        }
+
+        loadDashboard();
     </script>
 </body>
 </html>

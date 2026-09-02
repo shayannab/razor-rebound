@@ -146,7 +146,7 @@ function App() {
   const rootCauses = [
     { code: "3ds_enrollment_issue", percentage: "46.2%", desc: "Failed 3DS authentication checks.", action: "Complete 3DS or use alternative card types.", color: "#F59E0B" },
     { code: "risk_block", percentage: "16.1%", desc: "High fraud score or merchant risk warning.", action: "Examine security rules or contact checkout team.", color: "#EF4444" },
-    { code: "bank_partner_restriction", percentage: "13.0%", desc: "Declined due to global or MCC rules.", action: "Route automatically via another partner acquirer.", color: "#8B5CF6" },
+    { code: "bank_partner_restriction", percentage: "22.2%", desc: "Declined due to cross-border or partner restrictions.", action: "Escalate to merchant — requires config update or manual review.", color: "#8B5CF6" },
     { code: "integration_bug", percentage: "9.1%", desc: "Bad currency formats or merchant details.", action: "Fix transaction fields in checkout API payloads.", color: "#3B82F6" },
   ];
 
@@ -280,19 +280,19 @@ function App() {
               </p>
               <div className="stat-grid">
                 <div className="stat-item" style={{ borderTop: '3px solid var(--error)' }}>
-                  <div className="stat-num" style={{ color: 'var(--error)' }}>1,000</div>
-                  <div className="stat-label">Total Test Failures</div>
-                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(simulated batch)</div>
+                  <div className="stat-num" style={{ color: 'var(--error)' }}>9</div>
+                  <div className="stat-label">Total Batch Events</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(audit_log_real.db)</div>
                 </div>
                 <div className="stat-item" style={{ borderTop: '3px solid var(--error)' }}>
-                  <div className="stat-num" style={{ color: 'var(--error)' }}>$263k</div>
-                  <div className="stat-label">Total Failure Value</div>
-                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(simulated USD equivalent)</div>
+                  <div className="stat-num" style={{ color: 'var(--error)' }}>₹799.00</div>
+                  <div className="stat-label">Auto-Executed Links</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(4 payment links created)</div>
                 </div>
                 <div className="stat-item" style={{ borderTop: '3px solid var(--error)' }}>
-                  <div className="stat-num" style={{ color: 'var(--error)' }}>0</div>
-                  <div className="stat-label">Actionable Clues</div>
-                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(before integration)</div>
+                  <div className="stat-num" style={{ color: 'var(--error)' }}>5</div>
+                  <div className="stat-label">Held for Human Review</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(pending approval)</div>
                 </div>
               </div>
             </div>
@@ -429,19 +429,19 @@ function App() {
               </p>
               <div className="stat-grid">
                 <div className="stat-item" style={{ borderTop: '3px solid var(--success)', backgroundColor: 'rgba(255,255,255,0.7)' }}>
-                  <div className="stat-num" style={{ color: 'var(--success)' }}>26.7%</div>
-                  <div className="stat-label">Recoverable Percentage</div>
-                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(SIMULATED, based on estimated likelihoods)</div>
+                  <div className="stat-num" style={{ color: 'var(--success)' }}>₹799.00</div>
+                  <div className="stat-label">Auto-Executed Links</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(4 recovery links sent)</div>
                 </div>
                 <div className="stat-item" style={{ borderTop: '3px solid var(--success)', backgroundColor: 'rgba(255,255,255,0.7)' }}>
-                  <div className="stat-num" style={{ color: 'var(--success)' }}>&lt; 50ms</div>
-                  <div className="stat-label">Evaluation Speed</div>
-                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(SLA benchmark)</div>
+                  <div className="stat-num" style={{ color: 'var(--success)' }}>5</div>
+                  <div className="stat-label">Held for Human Review</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(held safely for approval)</div>
                 </div>
                 <div className="stat-item" style={{ borderTop: '3px solid var(--success)', backgroundColor: 'rgba(255,255,255,0.7)' }}>
                   <div className="stat-num" style={{ color: 'var(--success)' }}>100%</div>
                   <div className="stat-label">Audit Logs Saved</div>
-                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(system invariant)</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '0.2rem', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}>(audit_log_real.db)</div>
                 </div>
               </div>
             </div>

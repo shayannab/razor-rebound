@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live End-to-End Recovery Demo</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        :root {
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --primary: #059669;
+            --primary-dark: #047857;
+            --success-bg: #d1fae5;
+            --success-text: #065f46;
+            --warning-bg: #fef3c7;
+            --warning-text: #92400e;
+            --danger-bg: #fee2e2;
+            --danger-text: #991b1b;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #064e3b;
+        }
+
+        .header-title p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.875rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover { background: var(--primary-dark); }
+
+        .badge-live {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .badge-pulse {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--primary);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Controls Panel */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            flex-grow: 1;
+        }
+
+        .input-wrapper span {
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-right: 0.5rem;
+        }
+
+        .input-wrapper input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.1rem;
+            font-weight: 700;
+            width: 100%;
+            outline: none;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.85rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+
+
+        /* Diagnostic & Execution Timeline */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .timeline-step {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+        }
+
+        .timeline-step.active {
+            opacity: 1;
+            border-color: #6ee7b7;
+            background: #ecfdf5;
+        }
+
+        .timeline-step.failed-step {
+            opacity: 1;
+            border-color: #fca5a5;
+            background: #fef2f2;
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .step-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .step-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-muted);
+        }
+
+        .timeline-step.active .step-num {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .timeline-step.failed-step .step-num {
+            background: var(--danger);
+            color: #ffffff;
+        }
+
+        .code-block {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.85rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.825rem;
+            color: #475569;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* Result Hero Card */
+        .result-card {
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .result-card.recovered {
+            background: #ecfdf5;
+            border: 2px solid #6ee7b7;
+        }
+
+        .result-card.ineligible {
+            background: var(--warning-bg);
+            border: 2px solid var(--warning);
+        }
+
+        .recovered-amount {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #065f46;
+            letter-spacing: -1px;
+        }
+
+        .retry-btn-link {
+            background: var(--primary);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .retry-btn-link:hover {
+            transform: scale(1.03);
+            background: var(--primary-dark);
+        }
+
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <h1>Live End-to-End Recovery Demo</h1>
+                <p>Real-time Order Creation, Checkout Failure Capture &amp; Bounded Execution</p>
+            </div>
+            <div class="header-right">
+                <a href="/dashboard" class="nav-btn">View Full Audit Dashboard</a>
+                <div class="badge-live">
+                    <span class="badge-pulse"></span>
+                    LIVE TEST MODE
+                </div>
+            </div>
+        </header>
+
+        <!-- Controls -->
+        <div class="card">
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">Amount</div>
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <span>&#8377;</span>
+                    <input type="number" id="amount-input" value="400" min="1" max="100000" step="1">
+                </div>
+                <button id="btn-attempt" class="btn">
+                    Launch Razorpay Modal
+                </button>
+            </div>
+        </div>
+
+        <!-- Live Sequence Timeline - hidden until payment is attempted -->
+        <div class="timeline" id="timeline-container" style="display: none;">
+            
+            <!-- Step A: Order Created -->
+            <div class="timeline-step" id="step-order">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-num">1</span>
+                        <span>Razorpay Order Creation (`POST /v1/orders`)</span>
+                    </div>
+                    <span id="badge-order-status" style="font-size: 0.75rem; color: var(--text-muted);">Waiting...</span>
+                </div>
+                <div class="code-block" id="code-order">Click "Attempt Payment" to create a live order...</div>
+            </div>
+
+            <!-- Step B: Checkout & Failure Event -->
+            <div class="timeline-step" id="step-failure">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-num">2</span>
+                        <span>Client-Side Failure Hook (`rzp.on('payment.failed')`)</span>
+                    </div>
+                    <span id="badge-failure-status" style="font-size: 0.75rem; color: var(--text-muted);">Waiting...</span>
+                </div>
+                <div class="code-block" id="code-failure">Awaiting Razorpay Checkout interaction...</div>
+            </div>
+
+            <!-- Step C: Synchronous Diagnosis -->
+            <div class="timeline-step" id="step-diagnosis">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-num">3</span>
+                        <span>Real Pipeline Classification (`rule_engine.classify()`)</span>
+                    </div>
+                    <span id="badge-diagnosis-status" style="font-size: 0.75rem; color: var(--text-muted);">Waiting...</span>
+                </div>
+                <div class="code-block" id="code-diagnosis">Classification will run synchronously on failure capture...</div>
+            </div>
+
+            <!-- Step D: Bounded Recovery Execution & Audit Log -->
+            <div class="timeline-step" id="step-execution">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-num">4</span>
+                        <span>Bounded Execution & Audit Log (`BoundedRecoveryEngine`)</span>
+                    </div>
+                    <span id="badge-execution-status" style="font-size: 0.75rem; color: var(--text-muted);">Waiting...</span>
+                </div>
+                <div class="code-block" id="code-execution">Logged to audit_log_real.db before returning execution result...</div>
+            </div>
+
+            <!-- Step E: Outcome & Payment Link Polling -->
+            <div class="timeline-step" id="step-outcome">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-num">5</span>
+                        <span>Recovery Outcome & Live Polling</span>
+                    </div>
+                    <span id="badge-outcome-status" style="font-size: 0.75rem; color: var(--text-muted);">Waiting...</span>
+                </div>
+                <div id="outcome-content">
+                    <div class="code-block" id="code-outcome">Waiting for execution outcome...</div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        const btnAttempt = document.getElementById('btn-attempt');
+        const amountInput = document.getElementById('amount-input');
+
+        let currentOrderId = null;
+        let activePollInterval = null;
+
+        function setStepState(stepId, state, statusText) {
+            const stepEl = document.getElementById(stepId);
+            const badgeEl = document.getElementById(`badge-${stepId.replace('step-', '')}-status`);
+            stepEl.className = 'timeline-step ' + (state === 'active' ? 'active' : state === 'failed' ? 'failed-step' : '');
+            if (badgeEl && statusText) badgeEl.textContent = statusText;
+        }
+
+        btnAttempt.addEventListener('click', async () => {
+            if (activePollInterval) clearInterval(activePollInterval);
+
+            const amountRupees = parseFloat(amountInput.value);
+            if (isNaN(amountRupees) || amountRupees <= 0) {
+                alert("Please enter a valid amount.");
+                return;
+            }
+
+            // Reveal timeline on first click
+            document.getElementById('timeline-container').style.display = 'flex';
+
+            btnAttempt.disabled = true;
+            
+            // Reset Timeline UI
+            setStepState('step-order', 'active', 'Creating order...');
+            document.getElementById('code-order').textContent = `POST /api/create_live_order (${amountRupees} INR)...`;
+
+            setStepState('step-failure', '', 'Waiting...');
+            document.getElementById('code-failure').textContent = 'Awaiting checkout...';
+            
+            setStepState('step-diagnosis', '', 'Waiting...');
+            document.getElementById('code-diagnosis').textContent = 'Awaiting failure event...';
+
+            setStepState('step-execution', '', 'Waiting...');
+            document.getElementById('code-execution').textContent = 'Awaiting execution...';
+
+            setStepState('step-outcome', '', 'Waiting...');
+            document.getElementById('outcome-content').innerHTML = `<div class="code-block">Waiting for execution outcome...</div>`;
+
+            // Step 1: Call API to create order
+            let orderData;
+            try {
+                const res = await fetch('/api/create_live_order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount_rupees: amountRupees })
+                });
+                orderData = await res.json();
+                if (orderData.error) throw new Error(orderData.error);
+            } catch (err) {
+                setStepState('step-order', 'failed', 'Error creating order');
+                document.getElementById('code-order').textContent = `ERROR: ${err.message}`;
+                btnAttempt.disabled = false;
+                return;
+            }
+
+            currentOrderId = orderData.order_id;
+            setStepState('step-order', 'active', '✓ Order Created');
+            document.getElementById('code-order').textContent = JSON.stringify(orderData, null, 2);
+
+            // Step 2: Open Razorpay Checkout JS Modal
+            setStepState('step-failure', 'active', 'Checkout Modal Active');
+            document.getElementById('code-failure').textContent = `Opening Razorpay Checkout modal for order: ${currentOrderId}...\nDeliberately fail the payment inside the modal.`;
+
+            const options = {
+                key: orderData.key_id,
+                amount: orderData.amount_paise,
+                currency: "INR",
+                name: "AI Recovery Live Demo",
+                description: `Live Failure Test for ${currentOrderId}`,
+                order_id: orderData.order_id,
+                prefill: {
+                    name: "Demo Customer",
+                    email: "demo@recovery-ai.com",
+                    contact: "9999999999"
+                },
+                handler: function(response) {
+                    alert("Payment succeeded unexpectedly! Please click 'Attempt Payment' again and click 'Failure' inside the mock bank screen to test the recovery flow.");
+                    btnAttempt.disabled = false;
+                },
+                modal: {
+                    ondismiss: function() {
+                        btnAttempt.disabled = false;
+                    }
+                }
+            };
+
+            const rzp = new Razorpay(options);
+
+            // Synchronous Failure Handler
+            rzp.on('payment.failed', async function (response) {
+                const err = response.error;
+                
+                const failurePayload = {
+                    payment_id: err.metadata?.payment_id || err.payment_id || `pay_fail_${Date.now().toString(36)}`,
+                    order_id: err.metadata?.order_id || currentOrderId,
+                    amount_paise: orderData.amount_paise,
+                    error_code: err.code || 'payment_failed',
+                    error_source: err.source || 'gateway',
+                    error_reason: err.reason || 'payment_failed',
+                    error_step: err.step || 'payment_authorization'
+                };
+
+                setStepState('step-failure', 'failed-step', '✓ Failure Captured');
+                document.getElementById('code-failure').textContent = JSON.stringify(failurePayload, null, 2);
+
+                // Step 3 & 4: Process Failure through Backend
+                setStepState('step-diagnosis', 'active', 'Running classify()...');
+                setStepState('step-execution', 'active', 'Processing BoundedRecoveryEngine...');
+
+                try {
+                    const diagRes = await fetch('/api/live_process_failure', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(failurePayload)
+                    });
+                    if (!diagRes.ok) {
+                        const errText = await diagRes.text();
+                        throw new Error(`Server returned ${diagRes.status}: ${errText}`);
+                    }
+                    const resData = await diagRes.json();
+
+                    // Display Diagnosis
+                    setStepState('step-diagnosis', 'active', '✓ Classified');
+                    document.getElementById('code-diagnosis').textContent = JSON.stringify(resData.classification, null, 2);
+
+                    // Display Execution Result & Audit Log confirmation
+                    setStepState('step-execution', 'active', '✓ Logged to audit_log_real.db');
+                    document.getElementById('code-execution').textContent = JSON.stringify(resData.execution_result, null, 2);
+
+                    // Step 5: Render Outcome
+                    const exec = resData.execution_result;
+                    const outcomeContainer = document.getElementById('outcome-content');
+
+                    if (exec.status === 'executed' && exec.payment_link_id) {
+                        setStepState('step-outcome', 'active', '✓ Link Generated');
+                        
+                        outcomeContainer.innerHTML = `
+                            <div class="result-card" id="card-result">
+                                <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">
+                                    ✓ Bounded Recovery Triggered Live
+                                </div>
+                                <div style="font-size: 0.9rem; color: var(--text-muted);">
+                                    Real Payment Link created for reference ID: <code>${failurePayload.payment_id}</code>
+                                </div>
+                                <a href="${exec.short_url || '#'}" target="_blank" class="retry-btn-link" id="link-retry">
+                                    <span>Retry Payment (${(orderData.amount_paise / 100).toFixed(2)} INR)</span>
+                                </a>
+                                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;" id="poll-status-indicator">
+                                    Polling status for <code>${exec.payment_link_id}</code> every 2 seconds...
+                                </div>
+                            </div>
+                        `;
+
+                        // Start Live Polling for link status
+                        startPollingLinkStatus(exec.payment_link_id, orderData.amount_paise);
+
+                    } else if (exec.status === 'pending_approval' || exec.status === 'pending_approval_breaker_tripped' || exec.status === 'skipped') {
+                        // Genuine Ineligible / Pending Approval Path
+                        setStepState('step-outcome', 'failed-step', 'Held for Review');
+                        outcomeContainer.innerHTML = `
+                            <div class="result-card ineligible">
+                                <div style="font-size: 0.9rem; font-weight: 800; color: var(--warning); text-transform: uppercase;">
+                                    ⚠️ Held Safely for Human Review
+                                </div>
+                                <div style="font-size: 0.95rem; color: var(--text-main); font-weight: 600;">
+                                    Reason: <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--warning);">${exec.reason || 'ineligible_bounds'}</code>
+                                </div>
+                                <p style="font-size: 0.825rem; color: var(--text-muted); line-height: 1.4;">
+                                    This transaction failed eligibility bounds (e.g. amount cap, budget limit, or un-reroutable category) and was logged to <code>audit_log_real.db</code> as <code>pending_approval</code> without sending an automated link.
+                                </p>
+                            </div>
+                        `;
+                    } else {
+                        // System Execution Exception Path
+                        setStepState('step-execution', 'failed-step', 'System Error');
+                        setStepState('step-outcome', 'failed-step', 'Execution Failed');
+                        outcomeContainer.innerHTML = `
+                            <div class="result-card" style="background: rgba(239, 68, 68, 0.15); border: 2px solid var(--danger);">
+                                <div style="font-size: 0.9rem; font-weight: 800; color: var(--danger); text-transform: uppercase;">
+                                    ❌ System Execution Exception
+                                </div>
+                                <div style="font-size: 0.9rem; color: var(--text-main); font-weight: 600;">
+                                    Error: <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--danger);">${exec.error || 'Unexpected execution exception'}</code>
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                    A system exception occurred during execution. No fake eligibility determination was made.
+                                </p>
+                            </div>
+                        `;
+                    }
+
+                } catch (procErr) {
+                    setStepState('step-execution', 'failed', 'Error');
+                    document.getElementById('code-execution').textContent = `ERROR: ${procErr.message}`;
+                } finally {
+                    btnAttempt.disabled = false;
+                }
+            });
+
+            rzp.open();
+        });
+
+        async function triggerPresetFailure(presetType) {
+            if (activePollInterval) clearInterval(activePollInterval);
+
+            const amountRupees = parseFloat(amountInput.value) || 400;
+            const amountPaise = Math.round(amountRupees * 100);
+
+            setStepState('step-order', 'active', 'Creating order...');
+            document.getElementById('code-order').textContent = `POST /api/create_live_order (${amountRupees} INR)...`;
+
+            let orderData;
+            try {
+                const res = await fetch('/api/create_live_order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount_rupees: amountRupees })
+                });
+                orderData = await res.json();
+                if (orderData.error) throw new Error(orderData.error);
+            } catch (err) {
+                setStepState('step-order', 'failed', 'Error creating order');
+                document.getElementById('code-order').textContent = `ERROR: ${err.message}`;
+                return;
+            }
+
+            currentOrderId = orderData.order_id;
+            setStepState('step-order', 'active', '✓ Order Created');
+            document.getElementById('code-order').textContent = JSON.stringify(orderData, null, 2);
+
+            let failurePayload = {
+                payment_id: `pay_live_${Date.now().toString(36)}`,
+                order_id: currentOrderId,
+                amount_paise: amountPaise
+            };
+
+            if (presetType === 'gateway') {
+                failurePayload.error_source = 'gateway';
+                failurePayload.error_code = 'BAD_REQUEST_ERROR';
+                failurePayload.error_reason = 'payment_failed';
+                failurePayload.error_step = 'payment_authorization';
+            } else if (presetType === 'abandoned') {
+                failurePayload.error_source = null;
+                failurePayload.error_code = null;
+                failurePayload.error_reason = null;
+                failurePayload.error_step = null;
+            } else if (presetType === 'business') {
+                failurePayload.error_source = 'business';
+                failurePayload.error_code = 'BAD_REQUEST_ERROR';
+                failurePayload.error_reason = 'international_transaction_not_allowed';
+                failurePayload.error_step = 'payment_authorization';
+            }
+
+            setStepState('step-failure', 'failed-step', `✓ ${presetType.toUpperCase()} Failure Triggered`);
+            document.getElementById('code-failure').textContent = JSON.stringify(failurePayload, null, 2);
+
+            setStepState('step-diagnosis', 'active', 'Running classify()...');
+            setStepState('step-execution', 'active', 'Processing BoundedRecoveryEngine...');
+
+            try {
+                const diagRes = await fetch('/api/live_process_failure', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(failurePayload)
+                });
+                if (!diagRes.ok) {
+                    const errText = await diagRes.text();
+                    throw new Error(`Server returned ${diagRes.status}: ${errText}`);
+                }
+                const resData = await diagRes.json();
+
+                setStepState('step-diagnosis', 'active', '✓ Classified');
+                document.getElementById('code-diagnosis').textContent = JSON.stringify(resData.classification, null, 2);
+
+                setStepState('step-execution', 'active', '✓ Logged to audit_log_real.db');
+                document.getElementById('code-execution').textContent = JSON.stringify(resData.execution_result, null, 2);
+
+                const exec = resData.execution_result;
+                const outcomeContainer = document.getElementById('outcome-content');
+
+                if (exec.status === 'executed' && exec.payment_link_id) {
+                    setStepState('step-outcome', 'active', '✓ Link Generated');
+                    outcomeContainer.innerHTML = `
+                        <div class="result-card" id="card-result">
+                            <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">
+                                ✓ Bounded Recovery Triggered Live
+                            </div>
+                            <div style="font-size: 0.9rem; color: var(--text-muted);">
+                                Real Payment Link created for reference ID: <code>${failurePayload.payment_id}</code>
+                            </div>
+                            <a href="${exec.short_url || '#'}" target="_blank" class="retry-btn-link" id="link-retry">
+                                <span>Retry Payment (${(amountPaise / 100).toFixed(2)} INR)</span>
+                            </a>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;" id="poll-status-indicator">
+                                Polling status for <code>${exec.payment_link_id}</code> every 2 seconds...
+                            </div>
+                        </div>
+                    `;
+                    startPollingLinkStatus(exec.payment_link_id, amountPaise);
+                } else if (exec.status === 'pending_approval' || exec.status === 'pending_approval_breaker_tripped' || exec.status === 'skipped') {
+                    setStepState('step-outcome', 'failed-step', 'Held for Review');
+                    outcomeContainer.innerHTML = `
+                        <div class="result-card ineligible">
+                            <div style="font-size: 0.9rem; font-weight: 800; color: var(--warning); text-transform: uppercase;">
+                                ⚠️ Held Safely for Human Review
+                            </div>
+                            <div style="font-size: 0.95rem; color: var(--text-main); font-weight: 600;">
+                                Reason: <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--warning);">${exec.reason || 'ineligible_bounds'}</code>
+                            </div>
+                            <p style="font-size: 0.825rem; color: var(--text-muted); line-height: 1.4;">
+                                This transaction failed eligibility bounds (e.g. amount cap, budget limit, or un-reroutable category) and was logged to <code>audit_log_real.db</code> as <code>pending_approval</code> without sending an automated link.
+                            </p>
+                        </div>
+                    `;
+                } else {
+                    setStepState('step-execution', 'failed-step', 'System Error');
+                    setStepState('step-outcome', 'failed-step', 'Execution Failed');
+                    outcomeContainer.innerHTML = `
+                        <div class="result-card" style="background: rgba(239, 68, 68, 0.15); border: 2px solid var(--danger);">
+                            <div style="font-size: 0.9rem; font-weight: 800; color: var(--danger); text-transform: uppercase;">
+                                ❌ System Execution Exception
+                            </div>
+                            <div style="font-size: 0.9rem; color: var(--text-main); font-weight: 600;">
+                                Error: <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--danger);">${exec.error || 'Unexpected execution exception'}</code>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                A system exception occurred during execution. No fake eligibility determination was made.
+                            </p>
+                        </div>
+                    `;
+                }
+            } catch (procErr) {
+                setStepState('step-execution', 'failed', 'Error');
+                document.getElementById('code-execution').textContent = `ERROR: ${procErr.message}`;
+            }
+        }
+
+        function startPollingLinkStatus(linkId, amountPaise) {
+            activePollInterval = setInterval(async () => {
+                try {
+                    const res = await fetch(`/api/poll_link_status?link_id=${linkId}`);
+                    const data = await res.json();
+
+                    if (data.status === 'paid') {
+                        clearInterval(activePollInterval);
+                        
+                        const cardEl = document.getElementById('card-result');
+                        if (cardEl) {
+                            cardEl.className = 'result-card recovered';
+                            cardEl.innerHTML = `
+                                <div style="font-size: 0.85rem; font-weight: 800; color: var(--primary); text-transform: uppercase;">
+                                    🎉 RECOVERY SUCCESSFUL
+                                </div>
+                                <div class="recovered-amount">
+                                    ₹${(amountPaise / 100).toFixed(2)}
+                                </div>
+                                <div style="font-size: 0.9rem; font-weight: 600; color: var(--primary);">
+                                    ✓ Payment Link Confirmed Paid on Razorpay Network
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--text-muted);">
+                                    Link ID: <code>${linkId}</code> | Polled status: <strong>PAID</strong>
+                                </p>
+                            `;
+                        }
+                    }
+                } catch (e) {
+                    console.log("Polling error:", e);
+                }
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

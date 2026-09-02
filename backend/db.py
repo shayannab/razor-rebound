@@ -3,23 +3,23 @@ import json
 import os
 from datetime import datetime
 
-DB_PATH = "audit_log_real.db"
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = os.path.join(ROOT_DIR, "audit_log_real.db")
 
 def init_db():
-    if not os.path.exists(DB_PATH):
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS audit_log (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TEXT NOT NULL,
-                event_id TEXT NOT NULL,
-                action TEXT NOT NULL,
-                details_json TEXT NOT NULL
-            )
-        """)
-        conn.commit()
-        conn.close()
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS audit_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT NOT NULL,
+            event_id TEXT NOT NULL,
+            action TEXT NOT NULL,
+            details_json TEXT NOT NULL
+        )
+    """)
+    conn.commit()
+    conn.close()
 
 def log_audit(event_id: str, action: str, details: dict):
     """

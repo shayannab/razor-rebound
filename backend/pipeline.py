@@ -1,14 +1,14 @@
 from stages import IngestionStage, RuleEngineStage, explain_decision
 from ml_classifier import MLClassifierStage
 from audit_log import write_audit_log
-from recovery_engine import RecoveryRecommendationStage
+from recovery_engine import BoundedRecoveryEngine
 
 class PipelineOrchestrator:
     def __init__(self, ml_classifier: MLClassifierStage):
         self.ingestion = IngestionStage()
         self.rule_engine = RuleEngineStage()
         self.ml_classifier = ml_classifier
-        self.recovery = RecoveryRecommendationStage()
+        self.recovery = BoundedRecoveryEngine()
 
     def process_event(self, event: dict) -> dict:
         """
