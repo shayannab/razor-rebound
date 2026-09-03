@@ -167,7 +167,7 @@
                 <p>Events are automatically <strong>Executed</strong> ONLY if they satisfy all of the following strict invariants:
 
                 <br>2) <code>amount <= ₹5,000</code> max per event
-                <br>3) <code>Available budget <= ₹20,000</code> max per batch run
+                <br>3) <code>Available budget <= ₹20,000</code> max per rolling 24-hour window
                 <br>4) Circuit breaker safety: halted after <code>3 consecutive failures</code>
                 <br>5) Exactly <code>one execution attempt</code> per event ever.
                 <br>Any violation immediately falls back to <strong>Pending Human Approval</strong>.</p>
