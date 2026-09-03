@@ -40,7 +40,7 @@ export default function LandingPage() {
             </a>
             <a href="/live-demo" className="btn-primary-nav">
               <Zap size={16} />
-              <span>Live Recovery Demo</span>
+              <span>Live Payment Recovery</span>
             </a>
           </div>
         </div>
@@ -61,7 +61,7 @@ export default function LandingPage() {
           <div className="hero-cta-group">
             <a href="/live-demo" className="btn-hero-primary">
               <Zap size={18} />
-              <span>Live Recovery Demo</span>
+              <span>Live Payment Recovery</span>
               <ArrowRight size={18} />
             </a>
             <a href="/dashboard" className="btn-hero-secondary">
@@ -296,9 +296,9 @@ export default function LandingPage() {
         <div className="section-container">
           <div className="section-header">
             <div className="section-tag">Explore System</div>
-            <h2 className="section-title">Launch Live Demo or Audit Dashboard</h2>
+            <h2 className="section-title">Launch Payment Recovery or Audit Dashboard</h2>
             <p className="section-description">
-              Test real payment recovery end-to-end or inspect live execution logs in audit_log_real.db.
+              Execute real-time payment recovery end-to-end or inspect live execution logs in audit_log_real.db.
             </p>
           </div>
 
@@ -308,10 +308,10 @@ export default function LandingPage() {
                 <Zap size={28} />
               </div>
               <div className="action-card-content">
-                <h3>Live Recovery Demo</h3>
-                <p>Launch a live Razorpay Checkout modal, trigger a failure, and test payment link recovery.</p>
+                <h3>Live Payment Recovery</h3>
+                <p>Launch a live Razorpay Checkout modal, capture failure event, and generate locked recovery link.</p>
                 <div className="action-card-link">
-                  <span>Open Live Demo</span>
+                  <span>Open Payment Recovery</span>
                   <ExternalLink size={16} />
                 </div>
               </div>
@@ -360,8 +360,8 @@ export default function LandingPage() {
             <a href="/live-demo" className="footer-link-card primary">
               <Zap size={20} />
               <div>
-                <strong>Live Recovery Demo</strong>
-                <span>Simulate a failure &amp; generate payment link</span>
+                <strong>Live Payment Recovery</strong>
+                <span>Execute real-time failure capture &amp; payment link recovery</span>
               </div>
               <ExternalLink size={16} />
             </a>
