@@ -61,7 +61,12 @@ def create_payment_link(amount_paise: int, description: str, reference_id: str) 
         "reference_id": reference_id,
         "customer": {
             "name": "Recovery Customer",
-            "email": "recovery@example.com"
+            "email": "recovery@example.com",
+            "contact": "+919876543210"
+        },
+        "notify": {
+            "sms": True,
+            "email": True
         }
     }
     
