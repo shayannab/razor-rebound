@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="apple-touch-icon" href="/static/logo.png">
+    <link rel="icon" type="image/png" href="/favicon-64.png?v=2">
+    <link rel="apple-touch-icon" href="/logo.png">
     <title>Audit Dashboard — Razorpay Rebound</title>
     <style>
         :root {
@@ -149,9 +149,12 @@
 <body>
     <div class="container">
         <header>
-            <div>
-                <h1>Recovery Pipeline Results</h1>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Live view from audit_log_real.db — refreshes on every page load</p>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <img src="/logo.png" alt="Razorpay Rebound" width="36" height="36" style="border-radius: 8px;">
+                <div>
+                    <h1>Recovery Pipeline Audit Log</h1>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Live view from audit_log_real.db — refreshes on every page load</p>
+                </div>
             </div>
             <a href="/live-demo" class="nav-btn">Live Payment Recovery</a>
         </header>

@@ -278,3 +278,28 @@ def dashboard():
 def live_demo():
     live_demo_path = os.path.join(static_dir, "live_demo.html")
     return FileResponse(live_demo_path)
+
+@app.get("/favicon.ico")
+def favicon():
+    ico_path = os.path.join(frontend_dist_dir, "favicon.ico")
+    if os.path.exists(ico_path):
+        return FileResponse(ico_path, media_type="image/x-icon")
+    ico_path = os.path.join(static_dir, "favicon.ico")
+    return FileResponse(ico_path, media_type="image/x-icon")
+
+@app.get("/logo.png")
+def logo():
+    logo_path = os.path.join(frontend_dist_dir, "logo.png")
+    if os.path.exists(logo_path):
+        return FileResponse(logo_path, media_type="image/png")
+    logo_path = os.path.join(static_dir, "logo.png")
+    return FileResponse(logo_path, media_type="image/png")
+
+@app.get("/favicon-64.png")
+@app.get("/favicon.png")
+def favicon_png():
+    png_path = os.path.join(frontend_dist_dir, "favicon-64.png")
+    if os.path.exists(png_path):
+        return FileResponse(png_path, media_type="image/png")
+    png_path = os.path.join(static_dir, "favicon-64.png")
+    return FileResponse(png_path, media_type="image/png")
