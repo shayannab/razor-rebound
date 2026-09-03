@@ -48,9 +48,7 @@ export default function LandingPage() {
       <header className="navbar">
         <div className="nav-container">
           <div className="brand">
-            <div className="brand-logo">
-              <ShieldCheck className="brand-icon" size={24} />
-            </div>
+            <img src="/logo.png" alt="Razorpay Rebound" width="36" height="36" style={{borderRadius:'8px'}} />
             <div className="brand-text">
               <span className="brand-title">Razorpay Rebound</span>
             </div>
@@ -362,10 +360,8 @@ export default function LandingPage() {
         <div className="footer-container">
           <div className="footer-top">
             <div className="footer-brand">
-              <div className="brand-logo">
-                <ShieldCheck size={24} />
-              </div>
-              <span className="brand-title">Razorpay Rebound</span>
+              <img src="/logo.png" alt="Razorpay Rebound" width="36" height="36" style={{borderRadius:'8px'}} />
+              <span className="brand-title" style={{marginLeft:'0.5rem'}}>Razorpay Rebound</span>
             </div>
             <p className="footer-sub">Autonomous Revenue Recovery for Razorpay Merchants.</p>
           </div>
