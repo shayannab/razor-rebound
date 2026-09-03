@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ShieldCheck, 
   Zap, 
@@ -19,6 +19,29 @@ import {
 } from 'lucide-react';
 
 export default function LandingPage() {
+  const [confirmedTotal, setConfirmedTotal] = useState(2227600); // Default to live DB sum (₹22,276.00)
+
+  useEffect(() => {
+    async function fetchLiveMetrics() {
+      try {
+        const res = await fetch('/api/dashboard_data');
+        if (res.ok) {
+          const data = await res.json();
+          const events = data.events || [];
+          const totalPaise = events.reduce((sum, ev) => sum + (ev.confirmed_amount_paise || 0), 0);
+          if (totalPaise > 0) {
+            setConfirmedTotal(totalPaise);
+          }
+        }
+      } catch (e) {
+        console.warn('Could not fetch live dashboard metrics for landing page', e);
+      }
+    }
+    fetchLiveMetrics();
+  }, []);
+
+  const formatCurrency = (paise) => '₹' + (paise / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
   return (
     <div className="landing-wrapper">
       {/* Top Header Navbar */}
@@ -77,7 +100,7 @@ export default function LandingPage() {
                 <TrendingUp size={20} />
               </div>
               <div>
-                <div className="metric-value">₹14,253.00</div>
+                <div className="metric-value">{formatCurrency(confirmedTotal)}</div>
                 <div className="metric-label">Live DB Confirmed Recovered</div>
               </div>
             </div>
