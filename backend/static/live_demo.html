@@ -342,13 +342,24 @@
 
         <!-- Controls -->
         <div class="card">
-            <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">Amount</div>
-            <div class="input-group">
-                <div class="input-wrapper">
-                    <span>&#8377;</span>
-                    <input type="number" id="amount-input" value="400" min="1" max="100000" step="1">
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; gap: 1rem; align-items: flex-end;">
+                <div>
+                    <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Amount</div>
+                    <div class="input-wrapper">
+                        <span>&#8377;</span>
+                        <input type="number" id="amount-input" value="400" min="1" max="100000" step="1">
+                    </div>
                 </div>
-                <button id="btn-attempt" class="btn">
+                <div>
+                    <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Failure Scenario Type</div>
+                    <select id="scenario-select" style="width: 100%; padding: 0.7rem 0.85rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); font-weight: 600; font-size: 0.9rem;">
+                        <option value="gateway">🏦 Bank Gateway Failure (Auto-Reroutable → Recovery Link)</option>
+                        <option value="business">💳 Merchant Business Config Error (Held for Human Review)</option>
+                        <option value="customer">🔒 Customer 3DS Auth Failure (Held / Nudge Customer)</option>
+                        <option value="cap_violation">💰 Safety Cap Violation (> ₹5,000 Cap → Pending Approval)</option>
+                    </select>
+                </div>
+                <button id="btn-attempt" class="btn" style="height: 44px;">
                     Launch Razorpay Modal
                 </button>
             </div>
@@ -521,12 +532,24 @@
             rzp.on('payment.failed', async function (response) {
                 const err = response.error;
                 
+                const selectedScenario = document.getElementById('scenario-select').value;
+                let errSource = err.source || 'gateway';
+                let errCode = err.code || 'BAD_REQUEST_ERROR';
+
+                if (selectedScenario === 'business') {
+                    errSource = 'business';
+                    errCode = 'EXPLICIT_BUSINESS_DECLINE';
+                } else if (selectedScenario === 'customer') {
+                    errSource = 'customer';
+                    errCode = 'BAD_REQUEST_AUTHENTICATION_FAILED';
+                }
+
                 const failurePayload = {
                     payment_id: err.metadata?.payment_id || err.payment_id || `pay_fail_${Date.now().toString(36)}`,
                     order_id: err.metadata?.order_id || currentOrderId,
-                    amount_paise: orderData.amount_paise,
-                    error_code: err.code || 'payment_failed',
-                    error_source: err.source || 'gateway',
+                    amount_paise: selectedScenario === 'cap_violation' ? 600000 : orderData.amount_paise,
+                    error_code: errCode,
+                    error_source: errSource,
                     error_reason: err.reason || 'payment_failed',
                     error_step: err.step || 'payment_authorization'
                 };
