@@ -250,15 +250,23 @@ def confirm_payment(req: ConfirmPaymentRequest):
     })
     return {"status": "ok", "event_id": req.event_id, "amount_paid": req.amount_paid}
 
-# Serve static files
+# Serve static files & frontend dist
 static_dir = os.path.join(os.path.dirname(__file__), "static")
+frontend_dist_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
+
 if not os.path.exists(static_dir):
     os.makedirs(static_dir)
 
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
+if os.path.exists(os.path.join(frontend_dist_dir, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist_dir, "assets")), name="assets")
+
 @app.get("/")
 def index():
+    dist_index = os.path.join(frontend_dist_dir, "index.html")
+    if os.path.exists(dist_index):
+        return FileResponse(dist_index)
     return RedirectResponse(url="/dashboard")
 
 @app.get("/dashboard")
