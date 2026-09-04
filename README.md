@@ -1,9 +1,9 @@
 # Razorpay Rebound
-
-🚀 **Live Demo:** [https://razorpay-rebound.onrender.com](https://razorpay-rebound.onrender.com)
 Razorpay Rebound is an AI-driven, highly resilient revenue recovery pipeline. It intercepts failed payments in real-time, diagnoses their root causes using a hybrid rules-and-ML classification engine, and dynamically dispatches native Razorpay payment links to recover lost revenue.
 
 At its core, Rebound is designed with strict **safety invariants** and **cryptographic state preservation** to ensure that automated recovery never exceeds defined risk thresholds and every action is fully auditable.
+
+Live at: https://razorpay-rebound.onrender.com
 
 ## 🏗 Architecture Overview
 
