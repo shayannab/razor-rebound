@@ -69,6 +69,9 @@ class BoundedRecoveryEngine:
             pass
         
     def process_event(self, event: dict) -> dict:
+        # Re-sync state from DB so budget is always dynamically accurate
+        self._reconstruct_state_from_db(total_budget=2000000, window_hours=self.window_hours)
+
         event_id = event.get('payment_id') or event.get('order_id') # In this batch data, payment_id is our unique event identifier
         amount = event.get('amount')
         if amount is None:
