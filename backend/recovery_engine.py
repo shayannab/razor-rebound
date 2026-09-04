@@ -7,13 +7,14 @@ from razorpay_client import create_payment_link
 class BoundedRecoveryEngine:
     def __init__(self, max_amount_per_event=500000, total_budget=2000000, window_hours=24):
         self.max_amount_per_event = max_amount_per_event
+        self.total_budget = total_budget
         self.budget_remaining = total_budget
         self.consecutive_failures = 0
         self.breaker_tripped = False
         self.window_hours = window_hours
         
         # Reconstruct in-memory state from audit_log_real.db on startup for rolling N-hour window
-        self._reconstruct_state_from_db(total_budget, window_hours)
+        self._reconstruct_state_from_db(self.total_budget, self.window_hours)
 
     def _reconstruct_state_from_db(self, total_budget: int, window_hours: int = 24):
         rows = get_all_logs()
@@ -70,7 +71,7 @@ class BoundedRecoveryEngine:
         
     def process_event(self, event: dict) -> dict:
         # Re-sync state from DB so budget is always dynamically accurate
-        self._reconstruct_state_from_db(total_budget=2000000, window_hours=self.window_hours)
+        self._reconstruct_state_from_db(total_budget=self.total_budget, window_hours=self.window_hours)
 
         event_id = event.get('payment_id') or event.get('order_id') # In this batch data, payment_id is our unique event identifier
         amount = event.get('amount')

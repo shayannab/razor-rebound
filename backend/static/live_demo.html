@@ -359,6 +359,14 @@
                     Launch Razorpay Modal
                 </button>
             </div>
+            
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">Simulation Modes (Safety Invariant Testing)</div>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn" style="background: #3b82f6;" onclick="triggerPresetFailure('gateway')">Simulate Gateway Error (Recovers)</button>
+                    <button class="btn" style="background: var(--warning);" onclick="triggerPresetFailure('business')">Simulate Policy Block (No Recovery)</button>
+                </div>
+            </div>
         </div>
 
         <!-- Live Sequence Timeline - hidden until payment is attempted -->

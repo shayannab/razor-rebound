@@ -18,7 +18,7 @@ sample_events = [
         "category": "gateway_failure",
         "reason": "Temporary gateway timeout during bank authorization",
         "confidence": 0.90,
-        "hours_ago": 0.2,
+        "hours_ago": 26.2,
         "plink": "plink_L8x9K2m1NpQ0a1",
         "short_url": "https://rzp.io/rzp/kZ7w400"
     },
@@ -29,7 +29,7 @@ sample_events = [
         "category": "gateway_failure",
         "reason": "Bank server HTTP 503 response during 3DS auth",
         "confidence": 0.90,
-        "hours_ago": 1.5,
+        "hours_ago": 27.5,
         "plink": "plink_M7y8J1l0MoP9b2",
         "short_url": "https://rzp.io/rzp/kZ7w125"
     },
@@ -40,7 +40,7 @@ sample_events = [
         "category": "gateway_failure",
         "reason": "Issuer bank network dropped connection",
         "confidence": 0.90,
-        "hours_ago": 3.0,
+        "hours_ago": 29.0,
         "plink": "plink_N6z7I0k9LnO8c3",
         "short_url": "https://rzp.io/rzp/kZ7w300"
     },
@@ -51,7 +51,7 @@ sample_events = [
         "category": "high_value_transaction",
         "reason": "Amount ₹6,500 exceeds single-event cap of ₹5,000",
         "confidence": 0.85,
-        "hours_ago": 4.2
+        "hours_ago": 30.2
     },
     {
         "event_id": "pay_Q4b5G8i7JlM6e5",
@@ -60,7 +60,7 @@ sample_events = [
         "category": "gateway_failure",
         "reason": "UPI handler timed out at NPCI switch",
         "confidence": 0.90,
-        "hours_ago": 5.5,
+        "hours_ago": 31.5,
         "plink": "plink_Q4b5G8i7JlM6e5",
         "short_url": "https://rzp.io/rzp/kZ7w220"
     },
@@ -71,7 +71,7 @@ sample_events = [
         "category": "business_config_error",
         "reason": "Merchant international card acceptance disabled",
         "confidence": 1.0,
-        "hours_ago": 7.0
+        "hours_ago": 33.0
     },
     {
         "event_id": "pay_S2d3E6g5HjK4g7",
@@ -80,7 +80,7 @@ sample_events = [
         "category": "gateway_failure",
         "reason": "Mock bank gateway failure recovered",
         "confidence": 0.90,
-        "hours_ago": 9.2,
+        "hours_ago": 35.2,
         "plink": "plink_S2d3E6g5HjK4g7",
         "short_url": "https://rzp.io/rzp/kZ7w450"
     },
@@ -91,7 +91,7 @@ sample_events = [
         "category": "high_value_transaction",
         "reason": "Amount ₹8,000 exceeds single-event cap of ₹5,000",
         "confidence": 0.85,
-        "hours_ago": 12.0
+        "hours_ago": 38.0
     },
     {
         "event_id": "pay_U0f1C4e3FhI2i9",
@@ -100,7 +100,7 @@ sample_events = [
         "category": "gateway_failure",
         "reason": "Gateway session expired after 2FA challenge",
         "confidence": 0.90,
-        "hours_ago": 14.5,
+        "hours_ago": 40.5,
         "plink": "plink_U0f1C4e3FhI2i9",
         "short_url": "https://rzp.io/rzp/kZ7w350"
     },
@@ -111,7 +111,7 @@ sample_events = [
         "category": "gateway_failure",
         "reason": "Intermittent card network handshake error",
         "confidence": 0.90,
-        "hours_ago": 18.0,
+        "hours_ago": 44.0,
         "plink": "plink_V9g0B3d2EgH1j0",
         "short_url": "https://rzp.io/rzp/kZ7w500"
     }
